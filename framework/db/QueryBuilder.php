@@ -259,7 +259,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, $ignore = false)
     {
         if (empty($rows)) {
             return '';
@@ -300,8 +300,14 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
         }
+        
+        $ignoreStr = '';
+        if($ignore)
+        {
+            $ignoreStr = 'IGNORE';
+        }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        return 'INSERT ' . $ignoreStr . ' INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 
